@@ -4,36 +4,36 @@ import { User } from '../user';
 import { UserService } from '../user.service';
 
 @Component({
-  selector: 'app-heroes',
+  selector: 'app-users',
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.css']
 })
 export class UsersComponent implements OnInit {
-  heroes: User[];
+  users: User[];
 
-  constructor(private heroService: UserService) { }
+  constructor(private userService: UserService) { }
 
   ngOnInit() {
-    this.getHeroes();
+    this.getUsers();
   }
 
-  getHeroes(): void {
-    this.heroService.getUsers()
-      .subscribe(heroes => this.heroes = heroes);
+  getUsers(): void {
+    this.userService.getUsers()
+      .subscribe(users => this.users = users);
   }
 
-  add(name: string): void {
+  /*add(name: string): void {
     name = name.trim();
     if (!name) { return; }
-    this.heroService.addUser({ name } as User)
+    this.userService.addUser({ name } as User)
       .subscribe(hero => {
-        this.heroes.push(hero);
+        this.users.push(hero);
       });
-  }
+  }*/
 
-  delete(hero: User): void {
-    this.heroes = this.heroes.filter(h => h !== hero);
-    this.heroService.deleteUser(hero).subscribe();
-  }
+  /*delete(hero: User): void {
+    this.users = this.users.filter(h => h !== hero);
+    this.userService.deleteUser(hero).subscribe();
+  }*/
 
 }

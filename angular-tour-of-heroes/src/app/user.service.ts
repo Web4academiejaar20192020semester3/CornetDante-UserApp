@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
@@ -11,7 +11,7 @@ import { MessageService } from './message.service';
 @Injectable({ providedIn: 'root' })
 export class UserService {
 
-  private usersUrl = 'api/heroes';  // URL to web api
+  private usersUrl = 'localhost:8080/Controller?action=';  // URL to web api
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -21,16 +21,12 @@ export class UserService {
     private http: HttpClient,
     private messageService: MessageService) { }
 
-  /** GET heroes from the server */
+  /** GET users from the server */
   getUsers(): Observable<User[]> {
-    return this.http.get<User[]>(this.usersUrl)
-      .pipe(
-        tap(_ => this.log('fetched users')),
-        catchError(this.handleError<User[]>('getUsers', []))
-      );
+    return this.http.get<User[]>(this.usersUrl + 'ShowUsers');
   }
 
-  /** GET hero by id. Return `undefined` when id not found */
+  /** GET user by id. Return `undefined` when id not found */
   getUserNo404<Data>(id: number): Observable<User> {
     const url = `${this.usersUrl}/?id=${id}`;
     return this.http.get<User[]>(url)
@@ -44,19 +40,16 @@ export class UserService {
       );
   }
 
-  /** GET hero by id. Will 404 if id not found */
-  getUser(id: number): Observable<User> {
-    const url = `${this.usersUrl}/${id}`;
-    return this.http.get<User>(url).pipe(
-      tap(_ => this.log(`fetched user id=${id}`)),
-      catchError(this.handleError<User>(`getUser id=${id}`))
-    );
+  /** GET user by id. Will 404 if id not found */
+  getUser(id: string): Observable<User> {
+    const param = new HttpParams().set('userId', id);
+    return this.http.get<User>(this.usersUrl + 'GetPerson', {params: param});
   }
 
-  /* GET heroes whose name contains search term */
+  /* GET users whose name contains search term */
   searchUsers(term: string): Observable<User[]> {
     if (!term.trim()) {
-      // if not search term, return empty hero array.
+      // if not search term, return empty user array.
       return of([]);
     }
     return this.http.get<User[]>(`${this.usersUrl}/?name=${term}`).pipe(
@@ -67,15 +60,16 @@ export class UserService {
 
   //////// Save methods //////////
 
-  /** POST: add a new user to the server */
+/*  /!** POST: add a new user to the server *!/
   addUser(user: User): Observable<User> {
     return this.http.post<User>(this.usersUrl, user, this.httpOptions).pipe(
       tap((newUser: User) => this.log(`added user w/ id=${newUser.id}`)),
       catchError(this.handleError<User>('addUser'))
     );
-  }
+  }*/
 
-  /** DELETE: delete the user from the server */
+/*
+  /!** DELETE: delete the user from the server *!/
   deleteUser(user: User | number): Observable<User> {
     const id = typeof user === 'number' ? user : user.id;
     const url = `${this.usersUrl}/${id}`;
@@ -85,13 +79,11 @@ export class UserService {
       catchError(this.handleError<User>('deleteUser'))
     );
   }
+*/
 
   /** PUT: update the user on the server */
   updateUser(user: User): Observable<any> {
-    return this.http.put(this.usersUrl, user, this.httpOptions).pipe(
-      tap(_ => this.log(`updated hero id=${user.id}`)),
-      catchError(this.handleError<any>('updateUser'))
-    );
+    return this.http.post(this.usersUrl + 'UpdateUser', user, this.httpOptions);
   }
 
   /**

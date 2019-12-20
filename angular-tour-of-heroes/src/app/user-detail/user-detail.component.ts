@@ -6,27 +6,27 @@ import { User } from '../user';
 import { UserService } from '../user.service';
 
 @Component({
-  selector: 'app-hero-detail',
+  selector: 'app-user-detail',
   templateUrl: './user-detail.component.html',
   styleUrls: [ './user-detail.component.css' ]
 })
 export class UserDetailComponent implements OnInit {
-  @Input() hero: User;
+  @Input() user: User;
 
   constructor(
     private route: ActivatedRoute,
-    private heroService: UserService,
+    private userService: UserService,
     private location: Location
   ) {}
 
   ngOnInit(): void {
-    this.getHero();
+    this.getUser();
   }
 
-  getHero(): void {
-    const id = +this.route.snapshot.paramMap.get('id');
-    this.heroService.getUser(id)
-      .subscribe(hero => this.hero = hero);
+  getUser(): void {
+    const userId = this.route.snapshot.paramMap.get('userId');
+    this.userService.getUser(userId)
+      .subscribe(user => this.user = user);
   }
 
   goBack(): void {
@@ -34,7 +34,7 @@ export class UserDetailComponent implements OnInit {
   }
 
   save(): void {
-    this.heroService.updateUser(this.hero)
+    this.userService.updateUser(this.user)
       .subscribe(() => this.goBack());
   }
 }
