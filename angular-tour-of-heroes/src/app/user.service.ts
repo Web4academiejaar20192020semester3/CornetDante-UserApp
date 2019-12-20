@@ -23,7 +23,8 @@ export class UserService {
 
   /** GET users from the server */
   getUsers(): Observable<User[]> {
-    return this.http.get<User[]>(this.usersUrl + 'ShowUsers');
+    this.messageService.add('FriendService: fetching users');
+    return this.http.get<User[]>(this.usersUrl + 'GetUsers');
   }
 
   /** GET user by id. Return `undefined` when id not found */
